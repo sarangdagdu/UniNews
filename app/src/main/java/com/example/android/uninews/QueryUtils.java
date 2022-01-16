@@ -38,6 +38,7 @@ public final class QueryUtils {
 
             // TODO: Parse the response given by the SAMPLE_JSON_RESPONSE string and
             // build up a list of Earthquake objects with the corresponding data.
+            Log.i("TAG_EXTRACTION", "extractFeaturesFromJson: "+earthquakeJSON);
             JSONObject rootObject = new JSONObject(earthquakeJSON);
             JSONArray newsDetailsArray = rootObject.getJSONArray("response");
 
