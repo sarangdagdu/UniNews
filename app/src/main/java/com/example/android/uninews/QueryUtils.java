@@ -23,9 +23,9 @@ public final class QueryUtils {
      * Return a list of {@link NewsDetails} objects that has been built up from
      * parsing a JSON response.
      */
-    public static List<NewsDetails> extractFeaturesFromJson(String earthquakeJSON) {
+    public static List<NewsDetails> extractFeaturesFromJson(String newsJSON) {
 
-        if(TextUtils.isEmpty(earthquakeJSON)){
+        if(TextUtils.isEmpty(newsJSON)){
             return null;
         }
         // Create an empty ArrayList that we can start adding earthquakes to
@@ -38,13 +38,14 @@ public final class QueryUtils {
 
             // TODO: Parse the response given by the SAMPLE_JSON_RESPONSE string and
             // build up a list of Earthquake objects with the corresponding data.
-            Log.i("TAG_EXTRACTION", "extractFeaturesFromJson: "+earthquakeJSON);
-            JSONObject rootObject = new JSONObject(earthquakeJSON);
-            JSONArray newsDetailsArray = rootObject.getJSONArray("response");
+            Log.i("TAG_EXTRACTION", "extractFeaturesFromJson: "+newsJSON);
+            JSONObject rootObject = new JSONObject(newsJSON);
+            JSONObject responseObject = rootObject.getJSONObject("response");
+            JSONArray newsDetailsArray = responseObject.getJSONArray("results");
 
             //looping through the features array to create separate objects
             for(int i = 0 ; i < newsDetailsArray.length(); i++){
-                JSONObject newsSpecifics = newsDetailsArray.getJSONObject(i).getJSONObject("results");
+                JSONObject newsSpecifics = newsDetailsArray.getJSONObject(i);
                 String title = newsSpecifics.getString("webTitle");
                 String section = newsSpecifics.getString("sectionName");
                 String date = newsSpecifics.getString("webPublicationDate");
@@ -135,5 +136,26 @@ public final class QueryUtils {
             }
         }
         return output.toString();
+    }
+    /**
+     * Query the Guardian dataset and return a list of {@link NewsDetails} objects.
+     */
+    public static List<NewsDetails> fetchEarthquakeData(String requestUrl) {
+        // Create URL object
+        URL url = createUrl(requestUrl);
+
+        // Perform HTTP request to the URL and receive a JSON response back
+        String jsonResponse = null;
+        try {
+            jsonResponse = makeHttpRequest(url);
+        } catch (IOException e) {
+            Log.e("QueryUtils", "Problem making the HTTP request.", e);
+        }
+
+        // Extract relevant fields from the JSON response and create a list of {@link Earthquake}s
+        List<NewsDetails> news = extractFeaturesFromJson(jsonResponse);
+        Log.i("QueryUtils", "fetchNewsData: populated the list before returning");
+        // Return the list of {@link Earthquake}s
+        return news;
     }
 }

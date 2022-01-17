@@ -29,9 +29,8 @@ public class NewsAdapter extends ArrayAdapter<NewsDetails> {
             listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_item,parent,false);
         }
         NewsDetails currentNewsItem = getItem(position);
-
-        TextView newsInitialTextView = listItemView.findViewById(R.id.initial);
-        newsInitialTextView.setText(currentNewsItem.getmTitle().toUpperCase(Locale.ROOT).charAt(0));
+        //  TextView newsInitialTextView = listItemView.findViewById(R.id.initial);
+        //   newsInitialTextView.setText(currentNewsItem.getmTitle().toUpperCase(Locale.ROOT).charAt(0));
 
         TextView newsSectionTextView = listItemView.findViewById(R.id.section);
         newsSectionTextView.setText(currentNewsItem.getmSection());
@@ -39,15 +38,15 @@ public class NewsAdapter extends ArrayAdapter<NewsDetails> {
         TextView newsBody = listItemView.findViewById(R.id.title);
         newsBody.setText(currentNewsItem.getmTitle());
 
-        Date formattedDate = new Date(currentNewsItem.getmDate());
-        String dateToDisplay = formatDate(formattedDate);
+     //   Date formattedDate = new Date(currentNewsItem.getmDate());
+     //   String dateToDisplay = formatDate(formattedDate);
 
-        TextView dateTextView = listItemView.findViewById(R.id.date);
-        dateTextView.setText(dateToDisplay);
+     //   TextView dateTextView = listItemView.findViewById(R.id.date);
+    //    dateTextView.setText(dateToDisplay);
 
-        String formattedTime = formatTime(formattedDate);
-        TextView timeTextView = listItemView.findViewById(R.id.time);
-        timeTextView.setText(formattedTime);
+     //   String formattedTime = formatTime(formattedDate);
+     //   TextView timeTextView = listItemView.findViewById(R.id.time);
+    //    timeTextView.setText(formattedTime);
 
         return listItemView;
     }

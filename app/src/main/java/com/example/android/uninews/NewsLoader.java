@@ -24,7 +24,7 @@ public class NewsLoader extends AsyncTaskLoader<List<NewsDetails>> {
         if (mUrl == null)
             return null;
         else {
-            List<NewsDetails> newsDetails = QueryUtils.extractFeaturesFromJson(mUrl);
+            List<NewsDetails> newsDetails = QueryUtils.fetchEarthquakeData(mUrl);
             return newsDetails;
         }
     }

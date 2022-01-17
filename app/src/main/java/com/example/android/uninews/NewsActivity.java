@@ -68,8 +68,9 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         // buildUpon prepares the baseUri that we just parsed so we can add query parameters to it
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
-        // Append query parameter and its value. For example, the `format=geojson`
-        uriBuilder.appendQueryParameter("q", "debates");
+        // Append query parameter and its value. For example, the `format=json`
+        uriBuilder.appendQueryParameter("format","json");
+       // uriBuilder.appendQueryParameter("q", "debates");
         uriBuilder.appendQueryParameter("api-key", "test");
 
         // Return the completed uri `http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&limit=10&minmag=minMagnitude&orderby=time
