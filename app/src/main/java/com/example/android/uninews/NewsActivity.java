@@ -4,14 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,29 +37,42 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
         // because this activity implements the LoaderCallbacks interface).
         int NEWS_LOADER_ID = 1;
-        loaderManager.initLoader(NEWS_LOADER_ID, null, this);
 
-        // If there is a network connection, fetch data
-        // Find a reference to the {@link ListView} in the layout
-        ListView newsListView = (ListView) findViewById(R.id.list);
 
-        mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
-        newsListView.setEmptyView(mEmptyStateTextView);
-        // Create a new {@link ArrayAdapter} of news
-        adapter = new NewsAdapter(this, new ArrayList<NewsDetails>());
-        // Set the adapter on the {@link ListView}
-        // so the list can be populated in the user interface
-        newsListView.setAdapter(adapter);
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        if(networkInfo != null){
+            loaderManager.initLoader(NEWS_LOADER_ID, null, this);
 
-        newsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                NewsDetails currentNews = adapter.getItem(position);
-                Uri newsURi = Uri.parse(currentNews.getmUrl());
-                Intent visitUSGSIntent = new Intent(Intent.ACTION_VIEW, newsURi);
-                startActivity(visitUSGSIntent);
-            }
-        });
+            // If there is a network connection, fetch data
+            // Find a reference to the {@link ListView} in the layout
+            ListView newsListView = (ListView) findViewById(R.id.list);
+
+            mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
+            newsListView.setEmptyView(mEmptyStateTextView);
+            // Create a new {@link ArrayAdapter} of news
+            adapter = new NewsAdapter(this, new ArrayList<NewsDetails>());
+            // Set the adapter on the {@link ListView}
+            // so the list can be populated in the user interface
+            newsListView.setAdapter(adapter);
+
+            newsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    NewsDetails currentNews = adapter.getItem(position);
+                    Uri newsURi = Uri.parse(currentNews.getmUrl());
+                    Intent visitUSGSIntent = new Intent(Intent.ACTION_VIEW, newsURi);
+                    startActivity(visitUSGSIntent);
+                }
+            });
+        } else{
+            mEmptyStateTextView = findViewById(R.id.empty_view);
+            mEmptyStateTextView.setText(R.string.no_internet);
+
+            ProgressBar progressBar = findViewById(R.id.loading_indicator);
+            progressBar.setVisibility(View.GONE);
+        }
+
     }
 
     @NonNull
@@ -72,6 +89,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         uriBuilder.appendQueryParameter("format","json");
         uriBuilder.appendQueryParameter("api-key", "test");
         uriBuilder.appendQueryParameter("section","sport");
+        uriBuilder.appendQueryParameter("show-tags","contributor");
 
         return new NewsLoader(this, uriBuilder.toString());
     }

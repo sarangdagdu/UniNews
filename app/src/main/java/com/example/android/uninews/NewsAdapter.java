@@ -1,8 +1,7 @@
 package com.example.android.uninews;
 
-import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 public class NewsAdapter extends ArrayAdapter<NewsDetails> {
     private static final String LOCATION_SEPARATOR = "T";
+
     public NewsAdapter(@NonNull Context context, @NonNull ArrayList<NewsDetails> objects) {
         super(context, 0, objects);
     }
@@ -27,12 +24,12 @@ public class NewsAdapter extends ArrayAdapter<NewsDetails> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View listItemView = convertView;
-        if(listItemView == null){
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_item,parent,false);
+        if (listItemView == null) {
+            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
         }
         NewsDetails currentNewsItem = getItem(position);
-          TextView newsInitialTextView = listItemView.findViewById(R.id.initial);
-          newsInitialTextView.setText(currentNewsItem.getmTitle().charAt(0)+"");
+        TextView newsInitialTextView = listItemView.findViewById(R.id.initial);
+        newsInitialTextView.setText(currentNewsItem.getmTitle().charAt(0) + "");
 
         TextView newsSectionTextView = listItemView.findViewById(R.id.section);
         newsSectionTextView.setText(currentNewsItem.getmSection());
@@ -62,7 +59,10 @@ public class NewsAdapter extends ArrayAdapter<NewsDetails> {
 
         String author = currentNewsItem.getmAuthor();
         TextView authorTextView = listItemView.findViewById(R.id.author);
-        authorTextView.setText(author);
+        if (TextUtils.isEmpty(author)) {
+            authorTextView.setText(R.string.anonymous);
+        } else
+            authorTextView.setText(author);
 
         return listItemView;
     }

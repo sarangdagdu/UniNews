@@ -44,7 +44,11 @@ public final class QueryUtils {
                 String section = newsSpecifics.getString("sectionName");
                 String date = newsSpecifics.getString("webPublicationDate");
                 String url = newsSpecifics.getString("webUrl");
-                String author = newsSpecifics.getString("type");
+
+                JSONArray tags = newsSpecifics.getJSONArray("tags");
+
+                String author = tags.getJSONObject(0).getString("firstName") +" " + tags.getJSONObject(0).getString("lastName");
+
 
                 NewsDetails tempNewsObject = new NewsDetails(title,section,date,url,author);
                 news.add(tempNewsObject);
