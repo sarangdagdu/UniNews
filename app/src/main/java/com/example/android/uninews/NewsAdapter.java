@@ -2,6 +2,7 @@ package com.example.android.uninews;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class NewsAdapter extends ArrayAdapter<NewsDetails> {
+    private static final String LOCATION_SEPARATOR = "T";
     public NewsAdapter(@NonNull Context context, @NonNull ArrayList<NewsDetails> objects) {
         super(context, 0, objects);
     }
@@ -29,8 +31,8 @@ public class NewsAdapter extends ArrayAdapter<NewsDetails> {
             listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_item,parent,false);
         }
         NewsDetails currentNewsItem = getItem(position);
-        //  TextView newsInitialTextView = listItemView.findViewById(R.id.initial);
-        //   newsInitialTextView.setText(currentNewsItem.getmTitle().toUpperCase(Locale.ROOT).charAt(0));
+          TextView newsInitialTextView = listItemView.findViewById(R.id.initial);
+          newsInitialTextView.setText(currentNewsItem.getmTitle().charAt(0)+"");
 
         TextView newsSectionTextView = listItemView.findViewById(R.id.section);
         newsSectionTextView.setText(currentNewsItem.getmSection());
@@ -38,30 +40,30 @@ public class NewsAdapter extends ArrayAdapter<NewsDetails> {
         TextView newsBody = listItemView.findViewById(R.id.title);
         newsBody.setText(currentNewsItem.getmTitle());
 
-     //   Date formattedDate = new Date(currentNewsItem.getmDate());
-     //   String dateToDisplay = formatDate(formattedDate);
+        String fullDateAndTime = currentNewsItem.getmDate();
+        String dateString;
+        // Check whether the originalLocation string contains the "T" text
+        if (fullDateAndTime.contains(LOCATION_SEPARATOR)) {
+            // Split the string into different parts (as an array of Strings)
+            // based on the "T" text. We expect an array of 2 Strings, where
+            // the first String will be Date and the second String will be Time.
+            String[] parts = fullDateAndTime.split(LOCATION_SEPARATOR);
+            // Date from the entire date and time String
+            dateString = parts[0];
 
-     //   TextView dateTextView = listItemView.findViewById(R.id.date);
-    //    dateTextView.setText(dateToDisplay);
+        } else {
+            // Otherwise, there is no "T" text in the originalLocation string.
+            // Hence, set the default date offset to blank.
+            dateString = "";
+        }
 
-     //   String formattedTime = formatTime(formattedDate);
-     //   TextView timeTextView = listItemView.findViewById(R.id.time);
-    //    timeTextView.setText(formattedTime);
+        TextView dateTextView = listItemView.findViewById(R.id.date);
+        dateTextView.setText(dateString);
+
+        String author = currentNewsItem.getmAuthor();
+        TextView authorTextView = listItemView.findViewById(R.id.author);
+        authorTextView.setText(author);
 
         return listItemView;
-    }
-    /**
-     * Return the formatted date string (i.e. "Mar 3, 1984") from a Date object.
-     */
-    private String formatDate(Date dateObject) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("LLL dd, yyyy");
-        return dateFormat.format(dateObject);
-    }
-    /**
-     * Return the formatted date string (i.e. "4:30 PM") from a Date object.
-     */
-    private String formatTime(Date dateObject) {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
-        return timeFormat.format(dateObject);
     }
 }

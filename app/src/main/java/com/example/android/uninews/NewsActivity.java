@@ -21,7 +21,6 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
 
     NewsAdapter adapter;
     TextView mEmptyStateTextView;
-    private int NEWS_LOADER_ID = 1;
     private static final String GUARDIAN_URL = "https://content.guardianapis.com/search";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +32,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         // Initialize the loader. Pass in the int ID constant defined above and pass in null for
         // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
         // because this activity implements the LoaderCallbacks interface).
+        int NEWS_LOADER_ID = 1;
         loaderManager.initLoader(NEWS_LOADER_ID, null, this);
 
         // If there is a network connection, fetch data
@@ -41,7 +41,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         newsListView.setEmptyView(mEmptyStateTextView);
-        // Create a new {@link ArrayAdapter} of earthquakes
+        // Create a new {@link ArrayAdapter} of news
         adapter = new NewsAdapter(this, new ArrayList<NewsDetails>());
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
@@ -70,10 +70,9 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Append query parameter and its value. For example, the `format=json`
         uriBuilder.appendQueryParameter("format","json");
-       // uriBuilder.appendQueryParameter("q", "debates");
         uriBuilder.appendQueryParameter("api-key", "test");
+        uriBuilder.appendQueryParameter("section","sport");
 
-        // Return the completed uri `http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&limit=10&minmag=minMagnitude&orderby=time
         return new NewsLoader(this, uriBuilder.toString());
     }
 
@@ -87,7 +86,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         adapter.clear();
         mEmptyStateTextView.setText(R.string.no_news);
 
-        // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
+        // If there is a valid list of {@link NewsDetails}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
         if (news != null && !news.isEmpty()) {
             adapter.addAll(news);

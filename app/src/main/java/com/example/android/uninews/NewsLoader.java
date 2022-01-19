@@ -5,6 +5,9 @@ import android.content.Context;
 
 import java.util.List;
 
+/**
+ * The loader Class that is reponsible for fetching news.
+ */
 public class NewsLoader extends AsyncTaskLoader<List<NewsDetails>> {
 
     private String mUrl;

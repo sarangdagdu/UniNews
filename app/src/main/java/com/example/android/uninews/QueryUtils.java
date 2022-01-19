@@ -31,27 +31,22 @@ public final class QueryUtils {
         // Create an empty ArrayList that we can start adding earthquakes to
         List<NewsDetails> news = new ArrayList<>();
 
-        // Try to parse the SAMPLE_JSON_RESPONSE. If there's a problem with the way the JSON
-        // is formatted, a JSONException exception object will be thrown.
-        // Catch the exception so the app doesn't crash, and print the error message to the logs.
         try {
-
-            // TODO: Parse the response given by the SAMPLE_JSON_RESPONSE string and
-            // build up a list of Earthquake objects with the corresponding data.
-            Log.i("TAG_EXTRACTION", "extractFeaturesFromJson: "+newsJSON);
+            // build up a list of NewsDetails objects with the corresponding data.
             JSONObject rootObject = new JSONObject(newsJSON);
             JSONObject responseObject = rootObject.getJSONObject("response");
             JSONArray newsDetailsArray = responseObject.getJSONArray("results");
 
-            //looping through the features array to create separate objects
+            //looping through the results array to create separate objects
             for(int i = 0 ; i < newsDetailsArray.length(); i++){
                 JSONObject newsSpecifics = newsDetailsArray.getJSONObject(i);
                 String title = newsSpecifics.getString("webTitle");
                 String section = newsSpecifics.getString("sectionName");
                 String date = newsSpecifics.getString("webPublicationDate");
                 String url = newsSpecifics.getString("webUrl");
+                String author = newsSpecifics.getString("type");
 
-                NewsDetails tempNewsObject = new NewsDetails(title,section,date,url);
+                NewsDetails tempNewsObject = new NewsDetails(title,section,date,url,author);
                 news.add(tempNewsObject);
             }
 
@@ -107,7 +102,6 @@ public final class QueryUtils {
             }
 
         } catch (IOException e) {
-            // TODO: Handle the exception
             Log.e("MainActivity", "makeHttpRequest: IOException is : "+e.toString());
         } finally {
             if (urlConnection != null) {
@@ -152,10 +146,10 @@ public final class QueryUtils {
             Log.e("QueryUtils", "Problem making the HTTP request.", e);
         }
 
-        // Extract relevant fields from the JSON response and create a list of {@link Earthquake}s
+        // Extract relevant fields from the JSON response and create a list of {@link NewsDetails}s
         List<NewsDetails> news = extractFeaturesFromJson(jsonResponse);
         Log.i("QueryUtils", "fetchNewsData: populated the list before returning");
-        // Return the list of {@link Earthquake}s
+        // Return the list of NewsDetails
         return news;
     }
 }
